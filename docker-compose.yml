@@ -1,0 +1,34 @@
+# https://medium.com/@mikez_dg/how-to-set-up-a-simple-lamp-server-with-docker-images-in-2023-9b0e24476ec6
+
+services:
+  apache:
+    # image:   #check the php version you need for your project
+    build:
+      context: .
+      dockerfile: apache.dockerfile
+    restart: always
+    ports:
+      - "8080:80"    #this line maps your pc port to the container port
+    depends_on:
+      - db    #this line links this container to the db container
+    volumes:
+      - ./www:/var/www/html    #this line maps the content of ./html in your pc to the /var/www/html of the container
+
+  db:
+    image: mariadb:11.7.2    #check the mariadb version you need for your project
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: password    #you can change the mariadb root password here
+      MARIADB_DATABASE: ms_db    #you can change the database name here
+    volumes:
+      - ./mariadb:/var/lib/mysql    #this line maps the content of ./mariadb in your pc to the /var/lib/mysql of the container
+      - ./newsletters.sql:/docker-entrypoint-initdb.d/1.sql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"    #this line maps your pc port to the container port
+    depends_on:
+      - db    #this line links this container to the db container
+    environment:
+      PMA_HOST: db
