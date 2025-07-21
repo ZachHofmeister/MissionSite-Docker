@@ -21,6 +21,9 @@ SET time_zone = "+00:00";
 -- Database: `missionsitedb`
 --
 
+-- Grant privileges to admin user
+GRANT ALL PRIVILEGES on *.* TO 'admin'@'%';
+
 USE ms_db;
 
 -- --------------------------------------------------------
